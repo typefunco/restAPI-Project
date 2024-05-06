@@ -1,5 +1,7 @@
 package events
 
+import "restAPI/db"
+
 type Events struct {
 	ID             int
 	TotalPeople    int    `binding:"required"`
@@ -7,24 +9,48 @@ type Events struct {
 	MinuteDuration int
 }
 
-var eventsList = []Events{
-	{ID: 1,
-		TotalPeople:    20,
-		Theme:          "Crypto",
-		MinuteDuration: 90,
-	},
-	{
-		ID:             2,
-		TotalPeople:    30,
-		Theme:          "IT",
-		MinuteDuration: 240,
-	},
+func GetEvents() ([]Events, error) {
+	query := "SELECT * FROM events"
+	rows, err := db.DB.Query(query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	events := []Events{}
+
+	for rows.Next() {
+		var event Events
+		err := rows.Scan(&event.ID, &event.TotalPeople, &event.Theme, &event.MinuteDuration)
+
+		if err != nil {
+			return nil, err
+		}
+
+		events = append(events, event)
+	}
+
+	return events, nil
 }
 
-func GetEvents() []Events {
-	return eventsList
-}
+func (e Events) Save() error {
+	query := `
+	INSERT INTO events(id, TotalPeople, Theme, MinuteDuration)
+	VALUES(?, ?, ?, ?)
+	`
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
 
-func (e Events) Save() {
-	eventsList = append(eventsList, e)
+	defer stmt.Close()
+	_, err = stmt.Exec(e.ID, e.TotalPeople, e.Theme, e.MinuteDuration)
+
+	if err != nil {
+		return err
+	}
+
+	return err
 }

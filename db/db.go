@@ -21,7 +21,12 @@ func InitDB() {
 }
 
 func createTables() {
-	createEventsTable := `CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY AUTOINCREMENT, TotalPeople INTEGER, Theme TEXT NOT NULL, MinuteDuration INTEGER);`
+	createEventsTable := `CREATE TABLE IF NOT EXISTS events (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		TotalPeople INTEGER,
+		Theme TEXT NOT NULL,
+		MinuteDuration INTEGER);
+	`
 
 	_, err := DB.Exec(createEventsTable)
 

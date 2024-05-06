@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"restAPI/db"
 	"restAPI/events"
@@ -20,7 +21,14 @@ func main() {
 }
 
 func getEvents(context *gin.Context) {
-	events := events.GetEvents()
+	events, err := events.GetEvents()
+
+	if err != nil {
+		fmt.Println(err)
+		context.JSON(http.StatusInternalServerError, gin.H{"error message": "could not fetch data"})
+		return
+	}
+
 	context.JSON(http.StatusOK, events)
 }
 
@@ -33,8 +41,13 @@ func saveEvent(context *gin.Context) {
 		return
 	}
 
-	event.ID = 1
+	err = event.Save() // Unique ID
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error message": "could not fetch data"})
+		return
+	}
 
 	context.JSON(http.StatusOK, gin.H{"Message": "Event created", "event": event})
-	event.Save()
+
 }
