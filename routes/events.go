@@ -57,3 +57,37 @@ func getEvent(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"Status": "Event collected", "event": event})
 
 }
+
+func updateEvent(context *gin.Context) {
+	eventId, err := strconv.ParseInt(context.Param("id"), 10, 32)
+
+	if err != nil {
+		context.JSON(http.StatusBadGateway, gin.H{"error message": "Can't parse data from path"})
+		return
+	}
+
+	_, err = events.GetEventById(int(eventId))
+
+	if err != nil {
+		context.JSON(http.StatusBadGateway, gin.H{"error message": "Can't collect event from request"})
+		return
+	}
+
+	var updatedEvent events.Events
+	err = context.ShouldBindJSON(&updatedEvent)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error message": "Can't parse data"})
+		return
+	}
+
+	updatedEvent.ID = int(eventId)
+	err = updatedEvent.Update()
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error message": "Can't update data"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"Message": "Event updated successfully"})
+}

@@ -1,0 +1,8 @@
+PUT http://localhost:8080/events/1
+content-type: application/json
+
+{
+    "TotalPeople": 150,
+    "Theme": "DEFI-2",
+    "MinuteDuration": 900
+}
