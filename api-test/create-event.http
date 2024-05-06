@@ -2,8 +2,8 @@ POST http://localhost:8080/events
 Content-Type: application/json
 
 {
-    "ID" : 190,
-    "TotalPeople" : 13,
-    "Theme" : "Drops",
-    "MinuteDuration": 222
+    "ID" : 193,
+    "TotalPeople" : 27,
+    "Theme" : "Airdrops",
+    "MinuteDuration": 914
 }

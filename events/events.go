@@ -1,6 +1,8 @@
 package events
 
-import "restAPI/db"
+import (
+	"restAPI/db"
+)
 
 type Events struct {
 	ID             int
@@ -53,4 +55,18 @@ func (e Events) Save() error {
 	}
 
 	return err
+}
+
+func GetEventById(id int) (Events, error) {
+	query := "SELECT * FROM events WHERE id = ?"
+	row := db.DB.QueryRow(query, id)
+
+	var event Events
+	err := row.Scan(&event.ID, &event.TotalPeople, &event.Theme, &event.MinuteDuration)
+
+	if err != nil {
+		return Events{}, err
+	}
+
+	return event, nil
 }
