@@ -1,0 +1,9 @@
+PUT http://localhost:8080/authors/1
+content-type: application/json
+
+{
+    "Age" : 27,
+    "Name" : "Nikita Anufriev",
+    "Theme": "NFT",
+    "Experience": 6
+}

@@ -91,3 +91,28 @@ func updateEvent(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{"Message": "Event updated successfully"})
 }
+
+func deleteEvent(context *gin.Context) {
+	eventId, err := strconv.ParseInt(context.Param("id"), 10, 64)
+
+	if err != nil {
+		context.JSON(http.StatusBadGateway, gin.H{"error message": "Can't parse data from path"})
+		return
+	}
+
+	event, err := events.GetEventById(int(eventId))
+
+	if err != nil {
+		context.JSON(http.StatusBadGateway, gin.H{"error message": "Can't collect event from db"})
+		return
+	}
+
+	err = event.Delete(int(eventId))
+
+	if err != nil {
+		context.JSON(http.StatusBadGateway, gin.H{"error message": "Can't delete event"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"Message": "Event deleted successfully"})
+}

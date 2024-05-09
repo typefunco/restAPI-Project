@@ -45,7 +45,7 @@ func SaveAuthor(context *gin.Context) {
 		return
 	}
 
-	err = author.PostAuthors() // Unique ID
+	err = author.PostAuthor() // Unique ID
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error message": "could not fetch data"})
@@ -57,9 +57,60 @@ func SaveAuthor(context *gin.Context) {
 }
 
 func UpdateAuthor(context *gin.Context) {
-	// some code
+	AuthorId, err := strconv.ParseInt(context.Param("id"), 10, 32)
+
+	if err != nil {
+		context.JSON(http.StatusBadGateway, gin.H{"error message": "No author with this id"})
+		return
+	}
+
+	_, err = author.GetAuthorById(int(AuthorId))
+
+	if err != nil {
+		context.JSON(http.StatusBadGateway, gin.H{"message": "Not foung object with this id"})
+	}
+
+	var author author.Author
+	err = context.ShouldBindJSON(&author)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error message": "Can't parse data"})
+		return
+	}
+
+	author.ID = int(AuthorId)
+	err = author.UpdateAuthor()
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error message": "Can't update data"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"Message": "Author updated successfully"})
+
 }
 
 func DeleteAuthors(context *gin.Context) {
-	// some code
+	authorId, err := strconv.ParseInt(context.Param("id"), 10, 64)
+
+	if err != nil {
+		context.JSON(http.StatusBadGateway, gin.H{"error message": "Can't parse data from path"})
+		return
+	}
+
+	author, err := author.GetAuthorById(int(authorId))
+
+	if err != nil {
+		context.JSON(http.StatusBadGateway, gin.H{"error message": "Can't collect event from db"})
+		return
+	}
+
+	err = author.Delete(int(authorId))
+
+	if err != nil {
+		context.JSON(http.StatusBadGateway, gin.H{"error message": "Can't delete event"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"Message": "Event deleted successfully"})
 }

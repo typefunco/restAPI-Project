@@ -55,7 +55,7 @@ func GetAuthors() ([]Author, error) {
 	return authors, nil
 }
 
-func (a Author) PostAuthors() error {
+func (a Author) PostAuthor() error {
 	query := `
 	INSERT INTO authors(id, age, name, theme, experience)
 	VALUES(?, ?, ?, ?, ?)
@@ -74,6 +74,41 @@ func (a Author) PostAuthors() error {
 	if err != nil {
 		return err
 	}
+
+	return err
+}
+
+func (a Author) UpdateAuthor() error {
+	query := `
+	UPDATE authors
+	SET age = ?, name = ?, theme = ?, experience = ?
+	WHERE id = ?
+	`
+
+	stmt, err := db.DB.Prepare(query)
+
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(a.ID, a.Age, a.Name, a.Theme, a.Experience)
+	return err
+}
+
+func (a Author) Delete(id int) error {
+	query := "DELETE FROM authors WHERE id = ?"
+
+	stmt, err := db.DB.Prepare(query)
+
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(id)
 
 	return err
 }
