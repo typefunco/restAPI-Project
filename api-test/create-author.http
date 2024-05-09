@@ -1,0 +1,10 @@
+POST http://localhost:8080/authors
+content-Type: application/json
+
+{
+    "ID" : 2,
+    "Age" : 27,
+    "Name" : "Arut Nazaryan",
+    "Theme": "Drops",
+    "Experience": 9
+}
