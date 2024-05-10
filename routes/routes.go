@@ -15,4 +15,6 @@ func RegisterRoutes(server *gin.Engine) {
 	server.PUT("/authors/:id", UpdateAuthor)
 	server.DELETE("/authors/:id", DeleteAuthors)
 
+	server.POST("/signup", signup)
+
 }

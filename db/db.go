@@ -19,6 +19,7 @@ func InitDB() {
 	DB.SetMaxIdleConns(5)
 	createTables()
 	createAuthorDB()
+	createUsersDB()
 }
 
 func createTables() {

@@ -1,4 +1,4 @@
-package author
+package models
 
 import (
 	"restAPI/db"

@@ -2,7 +2,7 @@ package routes
 
 import (
 	"net/http"
-	"restAPI/author"
+	"restAPI/models"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +15,7 @@ func GetAuthor(context *gin.Context) {
 		context.JSON(http.StatusBadGateway, gin.H{"message": "Can't parse id"})
 	}
 
-	Author, err := author.GetAuthorById(int(AuthorId))
+	Author, err := models.GetAuthorById(int(AuthorId))
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "No author with this id"})
@@ -26,7 +26,7 @@ func GetAuthor(context *gin.Context) {
 }
 
 func GetAuthors(context *gin.Context) {
-	authors, err := author.GetAuthors()
+	authors, err := models.GetAuthors()
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error message": "could not fetch data"})
@@ -37,7 +37,7 @@ func GetAuthors(context *gin.Context) {
 }
 
 func SaveAuthor(context *gin.Context) {
-	var author author.Author
+	var author models.Author
 	err := context.ShouldBindJSON(&author)
 
 	if err != nil {
@@ -64,13 +64,13 @@ func UpdateAuthor(context *gin.Context) {
 		return
 	}
 
-	_, err = author.GetAuthorById(int(AuthorId))
+	_, err = models.GetAuthorById(int(AuthorId))
 
 	if err != nil {
 		context.JSON(http.StatusBadGateway, gin.H{"message": "Not foung object with this id"})
 	}
 
-	var author author.Author
+	var author models.Author
 	err = context.ShouldBindJSON(&author)
 
 	if err != nil {
@@ -98,7 +98,7 @@ func DeleteAuthors(context *gin.Context) {
 		return
 	}
 
-	author, err := author.GetAuthorById(int(authorId))
+	author, err := models.GetAuthorById(int(authorId))
 
 	if err != nil {
 		context.JSON(http.StatusBadGateway, gin.H{"error message": "Can't collect event from db"})

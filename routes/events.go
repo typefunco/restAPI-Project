@@ -2,14 +2,14 @@ package routes
 
 import (
 	"net/http"
-	"restAPI/events"
+	"restAPI/models"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func getEvents(context *gin.Context) {
-	events, err := events.GetEvents()
+	events, err := models.GetEvents()
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error message": "could not fetch data"})
@@ -20,7 +20,7 @@ func getEvents(context *gin.Context) {
 }
 
 func saveEvent(context *gin.Context) {
-	var event events.Events
+	var event models.Events
 	err := context.ShouldBindJSON(&event)
 
 	if err != nil {
@@ -47,7 +47,7 @@ func getEvent(context *gin.Context) {
 		return
 	}
 
-	event, err := events.GetEventById(int(eventId))
+	event, err := models.GetEventById(int(eventId))
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error message": "Could't get data"})
@@ -66,14 +66,14 @@ func updateEvent(context *gin.Context) {
 		return
 	}
 
-	_, err = events.GetEventById(int(eventId))
+	_, err = models.GetEventById(int(eventId))
 
 	if err != nil {
 		context.JSON(http.StatusBadGateway, gin.H{"error message": "Can't collect event from request"})
 		return
 	}
 
-	var updatedEvent events.Events
+	var updatedEvent models.Events
 	err = context.ShouldBindJSON(&updatedEvent)
 
 	if err != nil {
@@ -100,7 +100,7 @@ func deleteEvent(context *gin.Context) {
 		return
 	}
 
-	event, err := events.GetEventById(int(eventId))
+	event, err := models.GetEventById(int(eventId))
 
 	if err != nil {
 		context.JSON(http.StatusBadGateway, gin.H{"error message": "Can't collect event from db"})
