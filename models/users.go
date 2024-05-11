@@ -49,3 +49,23 @@ func (u User) Save() error {
 	return err
 
 }
+
+func (u User) ValidateCredentials() error {
+	query := "SELECT password FROM users WHERE login = ?"
+	row := db.DB.QueryRow(query, u.Login)
+
+	var retrievePassword string
+	err := row.Scan(&retrievePassword)
+
+	if err != nil {
+		return errors.New("Credentials invalid")
+	}
+
+	isValidPassword := utils.CheckPasswordHash(u.Password, retrievePassword)
+
+	if !isValidPassword {
+		return errors.New("Credentials invalid")
+	}
+
+	return nil
+}
