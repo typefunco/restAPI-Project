@@ -39,7 +39,7 @@ func login(context *gin.Context) {
 	err = user.ValidateCredentials()
 
 	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{"Message": "Wrong data"})
+		context.JSON(http.StatusUnauthorized, gin.H{"Message": err.Error()})
 		return
 	}
 
