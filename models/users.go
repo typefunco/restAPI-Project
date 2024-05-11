@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"restAPI/db"
+	"restAPI/utils"
 )
 
 type User struct {
@@ -29,7 +30,13 @@ func (u User) Save() error {
 		return errors.New("SHORT PASSWORD")
 	}
 
-	result, err := stmt.Exec(u.Login, u.Password)
+	hashedPassword, err := utils.HashPassword(u.Password)
+
+	if err != nil {
+		return err
+	}
+
+	result, err := stmt.Exec(u.Login, hashedPassword)
 
 	if err != nil {
 		return err
