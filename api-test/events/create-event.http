@@ -1,9 +1,9 @@
 POST http://localhost:8080/events
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTU2MzU5MTQsImlkIjoxLCJsb2dpbiI6InRlc3RAZ21haWwuY29tIn0.o3x0iyoFUNIdP-FQqNXOq-DoiomvEYEEm169wXvitG4
 
 {
-    "ID" : 195,
-    "TotalPeople" : 27,
-    "Theme" : "Airdrops",
+    "TotalPeople" : 24,
+    "Theme" : "NFT",
     "MinuteDuration": 914
 }

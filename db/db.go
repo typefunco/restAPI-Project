@@ -27,7 +27,10 @@ func createTables() {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		TotalPeople INTEGER,
 		Theme TEXT NOT NULL,
-		MinuteDuration INTEGER);
+		MinuteDuration INTEGER,
+		user_id INTEGER,
+		FOREIGN KEY (user_id) REFERENCES users(id)
+		)
 	`
 
 	_, err := DB.Exec(createEventsTable)

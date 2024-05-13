@@ -12,7 +12,7 @@ type User struct {
 	Password string
 }
 
-func (u User) Save() error {
+func (u *User) Save() error {
 	query := `
 	INSERT INTO users (login, password)
 	VALUES (?, ?)
@@ -50,7 +50,7 @@ func (u User) Save() error {
 
 }
 
-func (u User) ValidateCredentials() error {
+func (u *User) ValidateCredentials() error {
 	query := "SELECT id, password FROM users WHERE login = ?"
 	row := db.DB.QueryRow(query, u.Login) // single line from db
 

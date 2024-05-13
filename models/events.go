@@ -9,6 +9,7 @@ type Events struct {
 	TotalPeople    int    `binding:"required"`
 	Theme          string `binding:"required"`
 	MinuteDuration int
+	UserId         int
 }
 
 func GetEvents() ([]Events, error) {
@@ -25,7 +26,7 @@ func GetEvents() ([]Events, error) {
 
 	for rows.Next() {
 		var event Events
-		err := rows.Scan(&event.ID, &event.TotalPeople, &event.Theme, &event.MinuteDuration)
+		err := rows.Scan(&event.ID, &event.TotalPeople, &event.Theme, &event.MinuteDuration, &event.UserId)
 
 		if err != nil {
 			return nil, err
@@ -37,9 +38,9 @@ func GetEvents() ([]Events, error) {
 	return events, nil
 }
 
-func (e Events) Save() error {
+func (e *Events) Save() error {
 	query := `
-	INSERT INTO events(id, TotalPeople, Theme, MinuteDuration)
+	INSERT INTO events(TotalPeople, Theme, MinuteDuration, user_id)
 	VALUES(?, ?, ?, ?)
 	`
 	stmt, err := db.DB.Prepare(query)
@@ -48,11 +49,15 @@ func (e Events) Save() error {
 	}
 
 	defer stmt.Close()
-	_, err = stmt.Exec(e.ID, e.TotalPeople, e.Theme, e.MinuteDuration)
+	result, err := stmt.Exec(e.TotalPeople, e.Theme, e.MinuteDuration, e.UserId)
 
 	if err != nil {
 		return err
 	}
+
+	EventId, err := result.LastInsertId()
+
+	e.ID = int(EventId)
 
 	return err
 }
@@ -62,7 +67,7 @@ func GetEventById(id int) (Events, error) {
 	row := db.DB.QueryRow(query, id)
 
 	var event Events
-	err := row.Scan(&event.ID, &event.TotalPeople, &event.Theme, &event.MinuteDuration)
+	err := row.Scan(&event.ID, &event.TotalPeople, &event.Theme, &event.MinuteDuration, &event.UserId)
 
 	if err != nil {
 		return Events{}, err
@@ -74,7 +79,7 @@ func GetEventById(id int) (Events, error) {
 func (event Events) Update() error {
 	query := `
 	UPDATE events
-	SET TotalPeople = ?, Theme = ?, MinuteDuration = ?
+	SET TotalPeople = ?, Theme = ?, MinuteDuration = ?, user_id = ?
 	WHERE id = ?
 	`
 	stmt, err := db.DB.Prepare(query)
@@ -85,7 +90,7 @@ func (event Events) Update() error {
 
 	defer stmt.Close()
 
-	_, err = stmt.Exec(event.TotalPeople, event.Theme, event.MinuteDuration, event.ID)
+	_, err = stmt.Exec(event.TotalPeople, event.Theme, event.MinuteDuration, event.UserId, event.ID)
 	return err
 }
 
